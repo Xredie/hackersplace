@@ -1,29 +1,62 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hackers Place</title>
-    <style>
-        body {
-            background-color: black;
-            color: red;
-            font-family: Arial, sans-serif;
-            text-align: center;
-        }
-        iframe {
-            width: 100%;
-            height: 100vh;
-            border: none;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Hackers Place</title>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background: black;
+      color: red;
+      font-family: monospace;
+    }
+    h1 {
+      text-align: center;
+      padding: 10px;
+    }
+    iframe {
+      width: 100%;
+      height: calc(100% - 60px);
+      border: none;
+    }
+  </style>
 </head>
 <body>
-    <h1>Witaj na Hackers Place – jedynym prawdziwym anarchicznym serwerze Vectarii!</h1>
-    <iframe src="https://vectaria.io" id="game-frame"></iframe>
-    <script>
-        // Skrypt wstrzykujący cheaty Fentify i teleportujący gracza na odpowiednie koordynaty
-        // Tu musisz wstawić kod do wstrzykiwania cheatów, np. Fentify
-    </script>
+  <h1>Witaj na Hackers Place – serwerze bez zasad (2b2v)</h1>
+  <iframe src="https://vectaria.io" id="vectaria"></iframe>
+
+  <script>
+    // Automatyczne wstrzyknięcie teleportu i przygotowanie Fentify Hackers Edition
+    window.onload = () => {
+      const interval = setInterval(() => {
+        const iframe = document.getElementById('vectaria');
+        const vectariaWindow = iframe.contentWindow;
+
+        if (vectariaWindow && vectariaWindow.eval) {
+          try {
+            vectariaWindow.eval(`
+              setTimeout(() => {
+                // Ustawienie teleportu do bazy daleko od spawna
+                if (window.fentify && fentify.teleportTo) {
+                  fentify.teleportTo(100000, 100, 100000);
+                }
+
+                // Tymczasowe zapisanie koordynatów do localStorage
+                window.localStorage.setItem("fentify_teleport", JSON.stringify({ x: 100000, y: 100, z: 100000 }));
+
+                alert("Hackers Place aktywne na 2b2v! Teleport wykonany.");
+              }, 5000);
+            `);
+
+            clearInterval(interval);
+          } catch (e) {
+            // Czekamy dalej, aż iframe się załaduje
+          }
+        }
+      }, 1000);
+    };
+  </script>
 </body>
-</html>
+</
+    html>
