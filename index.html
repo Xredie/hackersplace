@@ -24,39 +24,65 @@
 </head>
 <body>
   <h1>Witaj na Hackers Place – serwerze bez zasad (2b2v)</h1>
-  <iframe src="https://vectaria.io" id="vectaria"></iframe>
+  <iframe src="https://vectaria.io/home" id="vectaria"></iframe>
 
   <script>
-    // Automatyczne wstrzyknięcie teleportu i przygotowanie Fentify Hackers Edition
-    window.onload = () => {
-      const interval = setInterval(() => {
-        const iframe = document.getElementById('vectaria');
-        const vectariaWindow = iframe.contentWindow;
+    const targetServerName = "2b2v";
+    const teleportCoords = { x: 100000, y: 100, z: 100000 };
 
-        if (vectariaWindow && vectariaWindow.eval) {
-          try {
-            vectariaWindow.eval(`
-              setTimeout(() => {
-                // Ustawienie teleportu do bazy daleko od spawna
-                if (window.fentify && fentify.teleportTo) {
-                  fentify.teleportTo(100000, 100, 100000);
-                }
+    const waitForDiscover = setInterval(() => {
+      const iframe = document.getElementById("vectaria");
+      if (!iframe || !iframe.contentWindow) return;
 
-                // Tymczasowe zapisanie koordynatów do localStorage
-                window.localStorage.setItem("fentify_teleport", JSON.stringify({ x: 100000, y: 100, z: 100000 }));
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        const url = iframe.contentWindow.location.href;
 
-                alert("Hackers Place aktywne na 2b2v! Teleport wykonany.");
-              }, 5000);
-            `);
+        // Jeśli jesteśmy na stronie /home, to nic nie robimy – czekamy na zalogowanie
+        if (url.includes("/home")) return;
 
-            clearInterval(interval);
-          } catch (e) {
-            // Czekamy dalej, aż iframe się załaduje
+        // Po zalogowaniu i przejściu do /discover – próbujemy kliknąć 2b2v
+        if (url.includes("/discover")) {
+          const buttons = doc.querySelectorAll("button, div");
+
+          for (const el of buttons) {
+            if (el.textContent && el.textContent.toLowerCase().includes(targetServerName)) {
+              el.click(); // Kliknij serwer 2b2v
+              console.log("Połączono z 2b2v!");
+              clearInterval(waitForDiscover);
+              break;
+            }
           }
         }
-      }, 1000);
-    };
+      } catch (e) {
+        // Czekamy dalej
+      }
+    }, 1000);
+
+    // Teleport po wejściu do gry
+    const waitForGame = setInterval(() => {
+      const iframe = document.getElementById("vectaria");
+      const win = iframe.contentWindow;
+
+      if (win && win.eval) {
+        try {
+          win.eval(`
+            setTimeout(() => {
+              if (window.fentify && fentify.teleportTo) {
+                fentify.teleportTo(${teleportCoords.x}, ${teleportCoords.y}, ${teleportCoords.z});
+              }
+              window.localStorage.setItem("fentify_teleport", JSON.stringify(${JSON.stringify(teleportCoords)}));
+              alert("Teleport wykonany na Hackers Place!");
+            }, 5000);
+          `);
+
+          clearInterval(waitForGame);
+        } catch (e) {
+          // Czekamy aż iframe wczyta grę
+        }
+      }
+    }, 2000);
   </script>
-</body>
-</
-    html>
+</body
+  >
+</html>
